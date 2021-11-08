@@ -28,16 +28,23 @@ public class PetDatabaase {
             } else if (userSelection == 2) {
                 addPets();
             } else if (userSelection == 3) {
-                System.out.println("\n  CURRENTLY IN DEVELOPMENT\n");
-                userSelection = 0;
+                if (petArray.size() == 0) {
+                    System.out.println("\nNo pet have been added, please add pet before updating\n");
+                    userSelection = 0;
+                } else
+                    updatePet();
             } else if (userSelection == 4) {
-                System.out.println("\n  CURRENTLY IN DEVELOPMENT\n");
-                userSelection = 0;
+                if (petArray.size() == 0) {
+                    System.out.println("\nNo pet have been added, please add pet before removing\n");
+                    userSelection = 0;
+                } else
+                    removePet();
             } else if (userSelection == 5) {
                 searchName();
             } else if (userSelection == 6) {
                 searchAge();
             } else if (userSelection == 7) {
+                System.out.print("\nThank you for utilizing this database, goodbye.\n");
                 return;
             }
         }
@@ -88,13 +95,19 @@ public class PetDatabaase {
                 petName = petRow[0];
                 petAge = Integer.parseInt(petRow[1]);
                 petArray.add(new Pet(petName, petAge));
-                System.out.print(petName + " " + petAge + " years old has been added\n");
+                System.out.print("\n" + petName + " " + petAge + " years old has been added\n");
             }
         }
         addPet = " "; // Reset userinput from "done" to null to allow loop to go through
     }
 
     static void searchName() { // Method to search current pet objects by name
+
+        System.out.printf("\n%3s %10s %4s\n", "ID", "Name", "Age"); //Display current database
+        for (Pet currentPet : petArray) {
+            System.out.printf("%3d %10s %4d\n", currentPet.getId(), currentPet.getName(), currentPet.getAge());
+        }
+        System.out.println("\n  " + petArray.size() + " Rows in this Set");
 
         ArrayList<Pet> petNameArray = new ArrayList<>(); // Creating temporary Pet array to fill with searched name pet
                                                          // objects
@@ -125,6 +138,12 @@ public class PetDatabaase {
 
     static void searchAge() { // Method to search current pet objects by age
 
+        System.out.printf("\n%3s %10s %4s\n", "ID", "Name", "Age"); //Display current database
+        for (Pet currentPet : petArray) {
+            System.out.printf("%3d %10s %4d\n", currentPet.getId(), currentPet.getName(), currentPet.getAge());
+        }
+        System.out.println("\n  " + petArray.size() + " Rows in this Set");
+
         ArrayList<Pet> petAgeArray = new ArrayList<>(); // Creating temporary Pet array to fill with searched pet
                                                         // objects with given age
         Scanner scanner = new Scanner(System.in);
@@ -150,5 +169,67 @@ public class PetDatabaase {
             System.out.printf("%3d %10s %4d\n", currentPet.getId(), currentPet.getName(), currentPet.getAge());
         }
         System.out.println("");
+    }
+
+    static void updatePet() {
+
+        System.out.printf("\n%3s %10s %4s\n", "ID", "Name", "Age"); //Display current database
+        for (Pet currentPet : petArray) {
+            System.out.printf("%3d %10s %4d\n", currentPet.getId(), currentPet.getName(), currentPet.getAge());
+        }
+        System.out.println("\n  " + petArray.size() + " Rows in this Set\n");
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("\nEnter the pet ID you want to update: "); 
+
+        int petID = scanner.nextInt();
+        String danglingLine = scanner.nextLine(); //Needed to eat the new line character
+
+        while (petID > petArray.size() || petID < 0) { //Makes sure that selected pet is from database, if not reasks user again
+            System.out.print("\nRequested pet ID not found, enter the pet ID you want to update: ");
+            petID = scanner.nextInt();
+        }
+
+        System.out.print("\nEnter the new updated pet (name, age): ");  
+        String newPet = scanner.nextLine();
+
+        String[] tempPet = newPet.split(" "); //Splits updated pet name and age into array
+        String newName = tempPet[0];
+        int newAge = Integer.parseInt(tempPet[1]);
+
+        String oldPetName = petArray.get(petID).getName(); //Assign old name and age of pet to variables to display 
+        int oldPetAge = petArray.get(petID).getAge();
+
+        petArray.get(petID).setName(newName); //Set new name and age to existing pet ID
+        petArray.get(petID).setAge(newAge);
+
+        System.out.println("\n" + oldPetName 
+        + " " + oldPetAge + " was changed to " + newName + " " + newAge + "\n"); //Prints to user that old pet has been updated to new pet
+    }
+
+    static void removePet() {
+
+        System.out.printf("\n%3s %10s %4s\n", "ID", "Name", "Age"); //Display current database
+        for (Pet currentPet : petArray) {
+            System.out.printf("%3d %10s %4d\n", currentPet.getId(), currentPet.getName(), currentPet.getAge());
+        }
+        System.out.println("\n  " + petArray.size() + " Rows in this Set"); 
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("\nEnter the pet ID you want to remove: ");
+        int petID = scanner.nextInt();
+        String danglingLine = scanner.nextLine(); //Needed to eat the new line character
+
+        while (petID > petArray.size() || petID < 0) { //Makes sure that selected pet is from database, if not reasks user again
+            System.out.print("\nRequested pet ID not found, enter the pet ID you want to remove: ");
+            petID = scanner.nextInt();
+        }
+
+        String removedName = petArray.get(petID).getName(); //Assign name and age of removed pet to variables to display 
+        int removedAge = petArray.get(petID).getAge();
+        petArray.remove(petID); //Remove pet object of petID from the petArray
+
+        System.out.println("\n" + removedName + " " + removedAge + " has been removed\n"); //Prints to user that selected pet has been removed from the database
+
     }
 }
